@@ -11,12 +11,14 @@ import LeftDrawer from 'components/LeftDrawer';
 import Logout from 'material-ui/svg-icons/action/power-settings-new';
 import GridOn from 'material-ui/svg-icons/image/grid-on';
 import PersonAdd from 'material-ui/svg-icons/social/person-add';
+import Map from 'material-ui/svg-icons/maps/map';
 import withWidth, {LARGE, SMALL} from 'material-ui/utils/withWidth';
 import { userLogout } from "actions/user";
 import Data from './data';
 
 const menus = [
   { text: 'DashBoard', icon: <GridOn/>, link: '/dashboard' },
+  { text: 'MapTrack', icon: <Map/>, link: '/maptrack' },
   { text: 'Register', icon: <PersonAdd/>, link: '/register' },
   { text: 'Logout', icon: <Logout/>, link: '/logout' },
 ];
