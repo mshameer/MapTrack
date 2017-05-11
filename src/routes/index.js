@@ -11,7 +11,7 @@ export default (
   <Route path="/" >
     <IndexRoute component={Login}/>
     <Route path="dashboard" component={requireAuth(Home)} />
-    <Route path="register" component={requireAuth(Register)} />
+    <Route path="register" component={Register} />
     <Route path="maptrack" component={requireAuth(MapTrack)} />
   </Route>
 );
