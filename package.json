@@ -57,6 +57,7 @@
     "redux-thunk": "^2.1.0",
     "sails": "~0.12.9",
     "sails-disk": "~0.10.9",
+    "style-loader": "^0.13.1",
     "webpack": "^2.1.0-beta.25",
     "babel-cli": "^6.18.0",
     "babel-core": "^6.18.2",
@@ -65,8 +66,7 @@
     "babel-preset-react": "^6.16.0",
     "babel-preset-stage-0": "^6.16.0",
     "css-loader": "^0.25.0",
-    "style-loader": "^0.13.1",
-    "jsdom": "^9.8.3",
+    "jsdom": "^9.8.3"
   },
   "devDependencies": {
     "babel-eslint": "^7.1.0",
@@ -84,7 +84,7 @@
     "server:dev": "NODE_ENV=dev sails lift",
     "server:prod": "NODE_ENV=prod node app.js",
     "build:dev": "NODE_ENV=dev node node_modules/webpack/bin/webpack.js --progress",
-    "build:prod": "NODE_ENV=prod node node_modules/webpack/bin/webpack.js --progress --optimize-minimize",
+    "build:prod": "NODE_ENV=prod node node_modules/webpack/bin/webpack.js -p --optimize-minimize",
     "test:server": "NODE_ENV=test mocha --recursive ./test/server/config.js ./test/server",
     "test:server:watch": "NODE_ENV=test nodemon -w ./api -w ./test/server -e js -x mocha --recursive ./test/server/config.js ./test/server",
     "test:client": "NODE_ENV=test mocha --recursive --compilers js:babel-core/register ./test/client/config.js ./test/client",
