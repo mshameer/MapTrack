@@ -84,7 +84,7 @@
     "server:dev": "NODE_ENV=dev sails lift",
     "server:prod": "NODE_ENV=prod node app.js",
     "build:dev": "NODE_ENV=dev node node_modules/webpack/bin/webpack.js --progress",
-    "build:prod": "NODE_ENV=prod node node_modules/webpack/bin/webpack.js -p --optimize-minimize",
+    "build:prod": "NODE_ENV=prod node node_modules/webpack/bin/webpack.js --progress --optimize-minimize",
     "test:server": "NODE_ENV=test mocha --recursive ./test/server/config.js ./test/server",
     "test:server:watch": "NODE_ENV=test nodemon -w ./api -w ./test/server -e js -x mocha --recursive ./test/server/config.js ./test/server",
     "test:client": "NODE_ENV=test mocha --recursive --compilers js:babel-core/register ./test/client/config.js ./test/client",
