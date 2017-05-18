@@ -29,9 +29,9 @@
     -->
 
     <!--STYLES-->
-    <link rel="stylesheet" href="/min/production.min.css">
+    <link rel="stylesheet" href="/styles/importer.css">
     <!--STYLES END-->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAi-azVvq3j8d8EOz3y0HX6Zcvo0XtvSZ4&v=3.exp"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDu6lqlZHVUXts57wfw20h1g3IXGPmwfng&v=3.exp"></script>
     <% include header %>
   </head>
 
@@ -90,17 +90,17 @@
     -->
     <script>
       if ('serviceWorker' in navigator) {
-        window.addEventListener('load', function() {
-          navigator.serviceWorker.register('/service-worker.js').then(function(registration) {
-            console.log('ServiceWorker registration successful with scope: ', registration.scope);
-          }, function(err) {
-            console.log('ServiceWorker registration failed: ', err);
-          });
-        });
+        // window.addEventListener('load', function() {
+        //   navigator.serviceWorker.register('/service-worker.js').then(function(registration) {
+        //     console.log('ServiceWorker registration successful with scope: ', registration.scope);
+        //   }, function(err) {
+        //     console.log('ServiceWorker registration failed: ', err);
+        //   });
+        // });
       }
     </script>
     <!--SCRIPTS-->
-    <script src="/min/production.min.js"></script>
+    <script src="/js/dependencies/sails.io.js"></script>
     <!--SCRIPTS END-->
   </body>
 </html>

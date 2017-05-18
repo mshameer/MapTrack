@@ -3,6 +3,7 @@ import { watchLoginRequest } from "sagas/login";
 import { watchSignupRequest } from "sagas/signup";
 import { watchSession } from "sagas/session"
 import { usersRequest } from "sagas/users"
+import { watchMapRequest } from "sagas/map"
 
 export default function* Root() {
     yield [
@@ -10,5 +11,6 @@ export default function* Root() {
         fork(watchSignupRequest),
         fork(watchSession),
         fork(usersRequest),
+        fork(watchMapRequest),
     ];
 }

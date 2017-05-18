@@ -9,7 +9,7 @@ import Avatar from 'material-ui/Avatar';
 import {grey400, darkBlack, lightBlack} from 'material-ui/styles/colors';
 import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-import * as actions from "actions/signup";
+import * as actions from "actions/map";
 import { withGoogleMap, GoogleMap, Marker, Polyline } from "react-google-maps";
 import withScriptjs from "react-google-maps/lib/async/withScriptjs";
 import CircularProgress from 'material-ui/CircularProgress';
@@ -18,105 +18,108 @@ import Layout from '../Layout';
 const TrackGoogleMap = withGoogleMap(props => (
   <GoogleMap
     defaultZoom={14}
-    defaultCenter={props.path[0]}
+    defaultCenter={props.center}
   >
-    {props.path.length && <Polyline options={{strokeColor: '#2e10ff', geodesic: true,  path: props.path }} />}
+    {props.path.length > 0 && <Polyline options={{strokeColor: '#2e10ff', geodesic: true,  path: props.path }} />}
   </GoogleMap>
 ));
 
-class Register extends Component {
-
-	state = {
-    path: [{lat: 8.5088733, lng: 76.909832}],
+const styles = {
+  loading: {
+    height: '100%',
+  },
+  container: {
+    height: '100%',
+  },
+  map: {
+    height: window.innerHeight-110,
+    width: `100%`,
+  },
+  button: {
+    height: 50,
   }
+};
+
+
+class MapTrack extends Component {
 
 	componentDidMount() {
-		const options = {
-		  enableHighAccuracy: false,
-		  timeout: 1000,
-		  maximumAge: 0
-		};
-
-		navigator.geolocation.getCurrentPosition(this.onLocationChange);
-		const id = navigator.geolocation.watchPosition(this.onLocationChange, (err) => {
-		  console.warn('ERROR(' + err.code + '): ' + err.message);
-		}, options);
+    navigator.geolocation.getCurrentPosition((pos) => {
+      this.props.setCurrentLocation(pos.coords);
+    }, (err) => {
+        console.warn('ERROR(' + err.code + '): ' + err.message);
+    });
   }
 
-	onLocationChange = (pos) => {
-	  var crd = pos.coords;
-		const path = this.state.path;
-		path.push({ lat: crd.latitude, lng: crd.longitude });
-    this.setState({path});
+	onStartTracking = () => {
+    const options = {
+      enableHighAccuracy: true,
+      timeout: 60000,
+      maximumAge: 0
+    };
+
+    this.watchId = navigator.geolocation.watchPosition((pos) => {
+      this.props.updateLocation(pos.coords);
+    }, (err) => {
+      console.warn('ERROR(' + err.code + '): ' + err.message);
+    }, options);
 	}
 
+  onStopTracking = () => {
+    navigator.geolocation.clearWatch(this.watchId);
+    this.props.createTrack();
+  }
+
 	render() {
-    const { errors, email, password, firstName, registerUser, inputChange } = this.props;
-		console.log('this.state.path');
+    const { path, center, trackingStatus } = this.props;
+    const touchTapFunction = trackingStatus ? this.onStopTracking : this.onStartTracking;
+    const buttonText = trackingStatus ? 'Stop' : 'Start';
+
     return (
-			<Layout title="Register">
+			<Layout title="MapTrack">
 				<div id="page-index" className="page" style={{paddingTop:60}}>
 					<TrackGoogleMap
 				    loadingElement={
-				      <div style={{ height: `100%` }}>
+				      <div style={styles.loading}>
 				        <CircularProgress />
 				      </div>
 				    }
 				    containerElement={
-				      <div style={{ height: window.innerHeight-50 }} />
+				      <div style={styles.container} />
 				    }
 				    mapElement={
-				      <div style={{ height: window.innerHeight-50, width: `100%` }} />
+				      <div style={styles.map} />
 				    }
-        		path={this.state.path}
+        		path={path}
+            center={center}
 				  />
-          <RaisedButton label="Start" fullWidth={true} style={{height:50}} />
+        <RaisedButton label={buttonText} fullWidth={true} style={styles.button} onTouchTap={touchTapFunction} />
 				</div>
 			</Layout>);
 	}
 }
 
-Register.propTypes = {
-    errors: PT.object,
-    registerUser: PT.func,
-    inputChange: PT.func,
-    firstName: PT.string,
-    email: PT.string,
-    password: PT.string
+MapTrack.propTypes = {
+  trackingStatus: PT.bool,
+  errors: PT.object,
+  center: PT.object,
+  path: PT.array,
+  updateLocation: PT.func,
+  setCurrentLocation: PT.func,
+  createTrack: PT.func,
 };
 
-const mapStateToProps = ({ signup }) => ({
-    errors: signup.errors,
-    firstName: signup.firstName,
-    email: signup.email,
-    password: signup.password,
+const mapStateToProps = ({ map }) => ({
+  trackingStatus: map.tracking,
+  errors: map.errors,
+  center: map.defaultLocation,
+  path: map.path,
 });
 
 const mapDispatchToProps = dispatch => ({
-    inputChange: (change) => dispatch(actions.signupInputChange(change)),
-    registerUser: (userData) => {
-        // Front Validation
-        let newErrors = {};
-        let hasErrors = false;
-        let { email, password, firstName } = userData;
-        if ( !firstName || firstName.length < 2) {
-          newErrors.firstName = "First Name required";
-          hasErrors = true;
-        }
-        if ( !email || email.length < 2) {
-          newErrors.email = "Email required";
-          hasErrors = true;
-        }
-        if ( !password || password.length < 2) {
-          newErrors.password = "Password required";
-          hasErrors = true;
-        }
-        if (!hasErrors ){
-          dispatch(actions.signupRequest(userData));
-        } else {
-          dispatch(actions.signupFailed(newErrors));
-        }
-    }
+    updateLocation: (change) => dispatch(actions.updateLocation(change)),
+    setCurrentLocation: (change) => dispatch(actions.setCurrentLocation(change)),
+    createTrack: () => dispatch(actions.createTrack()),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Register);
+export default connect(mapStateToProps, mapDispatchToProps)(MapTrack);
