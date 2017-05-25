@@ -10,11 +10,20 @@ function* tracking_process(action) {
   try {
     const session = yield select(state => state.user);
     const map = yield select(state => state.map);
-    const payload = yield call(createTrack, session, { path: map.path, type: 'total', noOfHouses: 10 });
+    const payload = yield call(createTrack, session, { path: map.path, type: 'total', noOfHouses: map.noOfHouses });
     yield put({ type: mapActions.MAP_TRACKING_CREATE_SUCCESS });
   } catch (e) {
     console.log(e);
-    //yield put(mapActions.locationFailed({message: 'Location Error'}));
+  }
+}
+
+function* track_load() {
+  try {
+    const session = yield select(state => state.user);
+    const tracks = yield call(loadTrack, session);
+    yield put({ type: mapActions.LOAD_MAP_TRACKS_SUCCESS, tracks } );
+  } catch (e) {
+    console.log(e);
   }
 }
 
@@ -25,6 +34,18 @@ const createTrack = (session, data) => {
     }
     return fetchApi("/tracks/create", data, 'post', headers );
 };
+
+const loadTrack = (session, data) => {
+    const accessToken = session.tokens.access.value;
+    const headers = {
+      Authorization: `Bearer ${accessToken}`,
+    }
+    return fetchApi("/tracks", {}, 'get', headers );
+};
+
+export function* watchLoadTrack() {
+    yield* takeEvery( mapActions.LOAD_MAP_TRACKS, track_load );
+}
 
 export function* watchMapRequest() {
     yield* takeEvery( mapActions.MAP_TRACKING_CREATE, tracking_process );

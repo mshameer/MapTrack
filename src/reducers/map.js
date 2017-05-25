@@ -3,6 +3,8 @@ import {
     MAP_TRACKING_UPDATE,
     MAP_CURRENT_LOCATION,
     MAP_TRACKING_CREATE_SUCCESS,
+    MAP_INPUT_CHANGE,
+    LOAD_MAP_TRACKS_SUCCESS,
 } from "actions/map";
 
 const initialState = {
@@ -25,6 +27,18 @@ export default (state=initialState, action={}) => {
             return { ...state, path, tracking: true, errors: {} };
         case MAP_TRACKING_CREATE_SUCCESS:
             return { ...state, tracking: false, errors: {} };
+        case LOAD_MAP_TRACKS_SUCCESS:
+            return { ...state, tracks: action.tracks, errors: {} };  
+        case MAP_INPUT_CHANGE:
+            let { change } = action;
+            if (change.hasOwnProperty("noOfHouses")) {
+              return {
+                ...state,
+                noOfHouses: !isNaN(change.noOfHouses) ? change.noOfHouses : '',
+                errors: { ...state.errors, noOfHouses: "", message: "" },
+                pause: false
+              };
+            }
         default: return state;
     }
 };

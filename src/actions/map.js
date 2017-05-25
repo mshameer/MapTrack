@@ -3,6 +3,9 @@ export const MAP_TRACKING_UPDATE = "MAP_TRACKING_UPDATE";
 export const MAP_CURRENT_LOCATION = "MAP_CURRENT_LOCATION";
 export const MAP_TRACKING_CREATE = "MAP_TRACKING_CREATE";
 export const MAP_TRACKING_CREATE_SUCCESS = "MAP_TRACKING_CREATE_SUCCESS";
+export const MAP_INPUT_CHANGE = "MAP_INPUT_CHANGE";
+export const LOAD_MAP_TRACKS = "LOAD_MAP_TRACKS";
+export const LOAD_MAP_TRACKS_SUCCESS = "LOAD_MAP_TRACKS_SUCCESS";
 
 export const startTracking = () => ({
     type: MAP_TRACKING_START,
@@ -20,4 +23,13 @@ export const setCurrentLocation = (coords) => ({
 
 export const createTrack = () => ({
     type: MAP_TRACKING_CREATE,
+});
+
+export const mapDetailsInputChange = (change) => ({
+    type: MAP_INPUT_CHANGE,
+    change,
+});
+
+export const loadPath = () => ({
+    type: LOAD_MAP_TRACKS,
 });
