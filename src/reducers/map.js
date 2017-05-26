@@ -1,5 +1,6 @@
 import {
     MAP_TRACKING_START,
+    MAP_TRACKING_STOP,
     MAP_TRACKING_UPDATE,
     MAP_CURRENT_LOCATION,
     MAP_TRACKING_CREATE_SUCCESS,
@@ -23,12 +24,15 @@ export default (state=initialState, action={}) => {
 
         case MAP_TRACKING_UPDATE:
             const path = state.path;
-            path.push({ lat: action.coords.latitude, lng: action.coords.longitude })
-            return { ...state, path, tracking: true, errors: {} };
+            const location = { lat: action.coords.latitude, lng: action.coords.longitude };
+            path.push(location)
+            return { ...state, path, tracking: true, defaultLocation: location, errors: {} };
+        case MAP_TRACKING_STOP:
+            return { ...state, path: [], tracking: false, errors: {} };
         case MAP_TRACKING_CREATE_SUCCESS:
             return { ...state, tracking: false, errors: {} };
         case LOAD_MAP_TRACKS_SUCCESS:
-            return { ...state, tracks: action.tracks, errors: {} };  
+            return { ...state, tracks: action.tracks, errors: {} };
         case MAP_INPUT_CHANGE:
             let { change } = action;
             if (change.hasOwnProperty("noOfHouses")) {

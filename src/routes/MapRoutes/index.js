@@ -33,7 +33,7 @@ const loadPaths = (tracks) => tracks.map((track ,index) => {
   if(path) {
     const pathCenter = path[Math.trunc(path.length/2)];
     return [
-      <Polyline options={{strokeColor: '#29b3ec', geodesic: true, path }} key={index} />,
+      <Polyline options={{strokeColor: '#29b3ec', geodesic: true, path }} key={index}  />,
       <Marker position={pathCenter} icon={symbolOne} label={{ text: track.noOfHouses.toString(), color: 'black', fontSize: '8px'}} />
     ];
   }

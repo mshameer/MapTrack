@@ -12,6 +12,8 @@ function* tracking_process(action) {
     const map = yield select(state => state.map);
     const payload = yield call(createTrack, session, { path: map.path, type: 'total', noOfHouses: map.noOfHouses });
     yield put({ type: mapActions.MAP_TRACKING_CREATE_SUCCESS });
+    yield put(mapActions.stopTracking());
+    yield put(mapActions.loadPath());
   } catch (e) {
     console.log(e);
   }
@@ -44,7 +46,9 @@ const loadTrack = (session, data) => {
 };
 
 export function* watchLoadTrack() {
+  while(true) {
     yield* takeEvery( mapActions.LOAD_MAP_TRACKS, track_load );
+  }  
 }
 
 export function* watchMapRequest() {

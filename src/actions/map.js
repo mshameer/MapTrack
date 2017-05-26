@@ -1,4 +1,5 @@
 export const MAP_TRACKING_START = "MAP_TRACKING_START";
+export const MAP_TRACKING_STOP = "MAP_TRACKING_STOP";
 export const MAP_TRACKING_UPDATE = "MAP_TRACKING_UPDATE";
 export const MAP_CURRENT_LOCATION = "MAP_CURRENT_LOCATION";
 export const MAP_TRACKING_CREATE = "MAP_TRACKING_CREATE";
@@ -9,6 +10,10 @@ export const LOAD_MAP_TRACKS_SUCCESS = "LOAD_MAP_TRACKS_SUCCESS";
 
 export const startTracking = () => ({
     type: MAP_TRACKING_START,
+});
+
+export const stopTracking = () => ({
+  type: MAP_TRACKING_STOP,
 });
 
 export const updateLocation = (coords) => ({
