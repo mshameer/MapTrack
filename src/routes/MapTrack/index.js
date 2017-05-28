@@ -88,6 +88,7 @@ class MapTrack extends Component {
     };
 
     this.watchId = navigator.geolocation.watchPosition((pos) => {
+      console.log(pos.coords);
       this.props.updateLocation(pos.coords);
     }, (err) => {
       console.warn('ERROR(' + err.code + '): ' + err.message);

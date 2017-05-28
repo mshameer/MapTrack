@@ -7,6 +7,7 @@ export const MAP_TRACKING_CREATE_SUCCESS = "MAP_TRACKING_CREATE_SUCCESS";
 export const MAP_INPUT_CHANGE = "MAP_INPUT_CHANGE";
 export const LOAD_MAP_TRACKS = "LOAD_MAP_TRACKS";
 export const LOAD_MAP_TRACKS_SUCCESS = "LOAD_MAP_TRACKS_SUCCESS";
+export const ADD_OR_REMOVE_TRACK = "ADD_OR_REMOVE_TRACK";
 
 export const startTracking = () => ({
     type: MAP_TRACKING_START,
@@ -33,6 +34,11 @@ export const createTrack = () => ({
 export const mapDetailsInputChange = (change) => ({
     type: MAP_INPUT_CHANGE,
     change,
+});
+
+export const addOrRemoveTrack = (track) => ({
+    type: ADD_OR_REMOVE_TRACK,
+    track,
 });
 
 export const loadPath = () => ({

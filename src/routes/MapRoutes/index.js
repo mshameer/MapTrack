@@ -27,13 +27,14 @@ const symbolOne = {
   scale: 1.5,
 };
 
-const loadPaths = (tracks) => tracks.map((track ,index) => {
+const loadPaths = ({tracks, addOrRemoveTrack}) => tracks.map((track ,index) => {
   const path = track.coords &&
     track.coords.map(pos => ({ lat: parseFloat(pos.latitude), lng: parseFloat(pos.longitude) }));
   if(path) {
     const pathCenter = path[Math.trunc(path.length/2)];
+    const strokeColor = track.selected ? '#ff8a3f' : '#29b3ec';
     return [
-      <Polyline options={{strokeColor: '#29b3ec', geodesic: true, path }} key={index}  />,
+      <Polyline options={{strokeColor, geodesic: true, path, strokeWeight: 7 }} key={index} onClick={() => addOrRemoveTrack(track) }  />,
       <Marker position={pathCenter} icon={symbolOne} label={{ text: track.noOfHouses.toString(), color: 'black', fontSize: '8px'}} />
     ];
   }
@@ -43,10 +44,9 @@ const TrackGoogleMap = withGoogleMap(props => (
   <GoogleMap
     defaultZoom={18}
     center={props.center}
-    options = {{ disableDefaultUI: true }}
+    options = {{ scaleControl: true, fullscreenControl: true }}
   >
-    {props.tracks && loadPaths(props.tracks)}
-    {props.path && <Polyline options={{strokeColor: '#2e10ff', geodesic: true, path: props.path }} />}
+    {props.tracks && loadPaths(props)}
   </GoogleMap>
 ));
 
@@ -63,11 +63,18 @@ const styles = {
   },
   button: {
     height: 50,
+  },
+  routInfo: {
+    height: 50,
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingLeft: 32,
   }
 };
 
 
-class MapTrack extends Component {
+class MapRoutes extends Component {
   state = {
     open: false,
   }
@@ -109,9 +116,7 @@ class MapTrack extends Component {
   }
 
 	render() {
-    const { path, center, trackingStatus, mapDetailsInputChange, noOfHouses, tracks } = this.props;
-    const touchTapFunction = trackingStatus ? this.onStopTracking : this.onStartTracking;
-    const buttonText = trackingStatus ? 'Stop' : 'Start';
+    const { mapDetailsInputChange, noOfHouses, routeTotals } = this.props;
     const actions = [
       <FlatButton
         label="Cancel"
@@ -126,7 +131,7 @@ class MapTrack extends Component {
     ];
 
     return (
-			<Layout title="MapTrack">
+			<Layout title="MapRoutes">
 				<div id="page-index" className="page" style={{paddingTop:60}}>
 					<TrackGoogleMap
 				    loadingElement={
@@ -140,10 +145,7 @@ class MapTrack extends Component {
 				    mapElement={
 				      <div style={styles.map} />
 				    }
-        		path={path}
-            center={center}
-            tracks={tracks}
-            noOfHouses={noOfHouses}
+        		{ ...this.props }
 				  />
           <Dialog
             actions={actions}
@@ -152,20 +154,26 @@ class MapTrack extends Component {
           >
             <TrackDetails noOfHouses={noOfHouses} onChangeHandle={mapDetailsInputChange} />
           </Dialog>
-        <RaisedButton label={buttonText} fullWidth={true} style={styles.button} onTouchTap={touchTapFunction} />
+          <div style={styles.routInfo}>
+            <div> Total Distance: {routeTotals.distance} Km </div>
+            <div>No Houses: {routeTotals.noOfHouses}</div>
+            <RaisedButton label="Create Route" style={styles.button} disabled={routeTotals.noOfHouses < 100} />
+          </div>
 				</div>
 			</Layout>);
 	}
 }
 
-MapTrack.propTypes = {
+MapRoutes.propTypes = {
   trackingStatus: PT.bool,
   errors: PT.object,
   center: PT.object,
+  routeTotals: PT.object,
   tracks: PT.array,
   noOfHouses: PT.string,
   path: PT.array,
   updateLocation: PT.func,
+  addOrRemoveTrack: PT.func,
   setCurrentLocation: PT.func,
   createTrack: PT.func,
   mapDetailsInputChange: PT.func,
@@ -179,6 +187,7 @@ const mapStateToProps = ({ map }) => ({
   path: map.path,
   noOfHouses: map.noOfHouses,
   tracks: map.tracks,
+  routeTotals: map.routeTotals,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -186,7 +195,8 @@ const mapDispatchToProps = dispatch => ({
     setCurrentLocation: (location) => dispatch(actions.setCurrentLocation(location)),
     createTrack: () => dispatch(actions.createTrack()),
     mapDetailsInputChange: (change) => dispatch(actions.mapDetailsInputChange(change)),
+    addOrRemoveTrack: (track) => dispatch(actions.addOrRemoveTrack(track)),
     loadPath: () => dispatch(actions.loadPath()),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(MapTrack);
+export default connect(mapStateToProps, mapDispatchToProps)(MapRoutes);
