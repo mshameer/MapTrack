@@ -6,8 +6,8 @@ import {
 
 const initialState = {
     isFetching: false,
-    email: "user1@facebook.com",
-    password: "12345678",
+    email: "mshameer@gmail.com",
+    password: "qwweee@123",
     pause: false,
     errors: {}
 };

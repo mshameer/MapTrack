@@ -28,7 +28,7 @@ const postLoginToAPI = data => {
     const headers = {
       'Authorization': `Basic ${new Buffer(`${data.email}:${data.password}`).toString('base64')}`,
     }
-    return fetchApi("/users/auth", {}, 'post', headers );
+    return fetchApi("/users/auth", {}, 'post', {}, headers );
 };
 
 export function* watchLoginRequest() {

@@ -15,7 +15,7 @@ const initialState = {
     tracking: false,
     path: [],
     errors: {},
-    routeTotals: { distance: 0, noOfHouses: 0 },
+    total: { distance: 0, noOfHouses: 0 },
     defaultLocation:{ lat: 0, lng: 0 }
 };
 
@@ -52,14 +52,14 @@ export default (state=initialState, action={}) => {
           let { tracks } = state;
           const selectedIndex = tracks.findIndex(mtrack => mtrack.id === track.id );
           tracks[selectedIndex].selected =  !track.selected;
-          const routeTotals = getTotalDistance(tracks);
-          return { ...state, tracks, routeTotals, errors: {} };
+          const total = getTotal(tracks);
+          return { ...state, tracks, total, errors: {} };
 
         default: return state;
     }
 };
 
-function getTotalDistance(tracks) {
+function getTotal(tracks) {
     let distance = 0;
     let noOfHouses = 0;
 

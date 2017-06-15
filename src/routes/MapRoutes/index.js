@@ -11,6 +11,7 @@ import {grey400, darkBlack, lightBlack} from 'material-ui/styles/colors';
 import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import * as actions from "actions/map";
+import * as routeActions from "actions/routes";
 import { withGoogleMap, GoogleMap, Marker, Polyline } from "react-google-maps";
 import withScriptjs from "react-google-maps/lib/async/withScriptjs";
 import CircularProgress from 'material-ui/CircularProgress';
@@ -101,11 +102,6 @@ class MapRoutes extends Component {
     }, options);
 	}
 
-  onStopTracking = () => {
-    this.setState({ open: true })
-    navigator.geolocation.clearWatch(this.watchId);
-  }
-
   handleClose = () => {
     this.setState({ open: false });
   }
@@ -113,6 +109,10 @@ class MapRoutes extends Component {
   handleSubmit = () => {
     this.props.createTrack();
     this.setState({ open: false });
+  }
+
+  onCreateRoute = () => {
+    this.props.createRoute(this.props.tracks);
   }
 
 	render() {
@@ -155,9 +155,9 @@ class MapRoutes extends Component {
             <TrackDetails noOfHouses={noOfHouses} onChangeHandle={mapDetailsInputChange} />
           </Dialog>
           <div style={styles.routInfo}>
-            <div> Total Distance: {routeTotals.distance} Km </div>
+            <div> Total Distance: {routeTotals.distance.toFixed(2)} Km </div>
             <div>No Houses: {routeTotals.noOfHouses}</div>
-            <RaisedButton label="Create Route" style={styles.button} disabled={routeTotals.noOfHouses < 100} />
+            <RaisedButton label="Create Route" style={styles.button} disabled={routeTotals.noOfHouses < 100} onTouchTap={this.onCreateRoute} />
           </div>
 				</div>
 			</Layout>);
@@ -175,25 +175,27 @@ MapRoutes.propTypes = {
   updateLocation: PT.func,
   addOrRemoveTrack: PT.func,
   setCurrentLocation: PT.func,
+  createRoute: PT.func,
   createTrack: PT.func,
   mapDetailsInputChange: PT.func,
   loadPath: PT.func,
 };
 
-const mapStateToProps = ({ map }) => ({
+const mapStateToProps = ({ map, routes }) => ({
   trackingStatus: map.tracking,
   errors: map.errors,
   center: map.defaultLocation,
   path: map.path,
   noOfHouses: map.noOfHouses,
   tracks: map.tracks,
-  routeTotals: map.routeTotals,
+  routeTotals: map.total,
 });
 
 const mapDispatchToProps = dispatch => ({
     updateLocation: (location) => dispatch(actions.updateLocation(location)),
     setCurrentLocation: (location) => dispatch(actions.setCurrentLocation(location)),
     createTrack: () => dispatch(actions.createTrack()),
+    createRoute: () => dispatch(routeActions.createRoute()),
     mapDetailsInputChange: (change) => dispatch(actions.mapDetailsInputChange(change)),
     addOrRemoveTrack: (track) => dispatch(actions.addOrRemoveTrack(track)),
     loadPath: () => dispatch(actions.loadPath()),

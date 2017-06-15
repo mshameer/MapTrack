@@ -41,7 +41,7 @@ const refreshToken = (session) => {
 		return Promise.reject();
 	}
 
-  return fetchApi('/users/auth/refresh', { token: session.tokens.refresh, user: session.user }, 'post', {
+  return fetchApi('/users/auth/refresh', { token: session.tokens.refresh, user: session.user }, 'post', {}, {
     Authorization: null,
   });
 
@@ -52,10 +52,7 @@ const revoke = (session) => {
 		type: session.tokens[tokenKey].type,
 		value: session.tokens[tokenKey].value,
 	}))
-  const accessToken = session.tokens.access.value;
-  return fetchApi('/users/auth/revoke', { tokens }, 'post', {
-    Authorization: `Bearer ${accessToken}`,
-  });
+  return fetchApi('/users/auth/revoke', { tokens }, 'post', session);
 };
 
 let refreshTask;

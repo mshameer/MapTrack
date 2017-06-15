@@ -1,10 +1,7 @@
 import { takeEvery, delay } from "redux-saga";
 import { call, put, select, fork } from "redux-saga/effects";
-import { browserHistory } from 'react-router'
 import { fetchApi } from 'utils/api-fetch'
-
 import * as mapActions from "actions/map";
-let watchId;
 
 function* tracking_process(action) {
   try {
@@ -30,25 +27,17 @@ function* track_load() {
 }
 
 const createTrack = (session, data) => {
-    const accessToken = session.tokens.access.value;
-    const headers = {
-      Authorization: `Bearer ${accessToken}`,
-    }
-    return fetchApi("/tracks/create", data, 'post', headers );
+  return fetchApi("/tracks/create", data, 'post', session );
 };
 
 const loadTrack = (session, data) => {
-    const accessToken = session.tokens.access.value;
-    const headers = {
-      Authorization: `Bearer ${accessToken}`,
-    }
-    return fetchApi("/tracks", {}, 'get', headers );
+  return fetchApi("/tracks", {}, 'get', session );
 };
 
 export function* watchLoadTrack() {
   while(true) {
     yield* takeEvery( mapActions.LOAD_MAP_TRACKS, track_load );
-  }  
+  }
 }
 
 export function* watchMapRequest() {

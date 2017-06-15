@@ -17,12 +17,8 @@ function* users_process(action) {
   }
 }
 
-
 const fetchUsers = session => {
-    const accessToken = session.tokens.access.value;
-    return fetchApi('/users', {}, 'get', {
-      Authorization: `Bearer ${accessToken}`,
-    });
+  return fetchApi('/users', {}, 'get', session);
 };
 
 export function* usersRequest() {

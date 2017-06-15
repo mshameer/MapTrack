@@ -18,12 +18,18 @@ export const exceptionExtractError = (exception) => {
 	return error;
 };
 
-export const fetchApi = (endPoint, payload = {}, reMethod = 'get', headers = {}) => {
+export const fetchApi = (endPoint, payload = {}, reMethod = 'get', session = {}, headers = {} ) => {
+	const accessToken = session.tokens && session.tokens.access.value;
 	const method =reMethod ? reMethod.toUpperCase() : 'GET';
-	const reqHeaders = {
+
+	let reqHeaders = {
 		'Client-ID': '8puWuJWZYls1Ylawxm6CMiYREhsGGSyw',
 		...headers,
 	};
+
+	if(accessToken) {
+		reqHeaders = Object.assign(reqHeaders, { Authorization: `Bearer ${accessToken}`})
+	}
 
 	const options = { headers: reqHeaders, method };
 	let url = endPoint;

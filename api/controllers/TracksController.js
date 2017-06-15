@@ -11,6 +11,7 @@
 module.exports = {
 	create(req, res) {
 		const params = req.allParams();
+
 		Tracks.add(params, (err, map) => {
 			if (err) {
 				return res.negotiate(err);
@@ -21,7 +22,7 @@ module.exports = {
 	  	});
 
 			Promise.all(promises).then(function(records) {
-	      res.json(records);
+	      res.json(map);
 	    })
 	    .catch(function(err) {
 	      return res.negotiate(err);
