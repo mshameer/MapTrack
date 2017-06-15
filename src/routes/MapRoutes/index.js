@@ -1,19 +1,19 @@
 import React, { Component } from 'react';
 import PT from 'prop-types';
-import { connect } from "react-redux";
-import {List, ListItem} from 'material-ui/List';
+import { connect } from 'react-redux';
+import { List, ListItem } from 'material-ui/List';
 import Divider from 'material-ui/Divider';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import Subheader from 'material-ui/Subheader';
 import Avatar from 'material-ui/Avatar';
-import {grey400, darkBlack, lightBlack} from 'material-ui/styles/colors';
+import { grey400, darkBlack, lightBlack } from 'material-ui/styles/colors';
 import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-import * as actions from "actions/map";
-import * as routeActions from "actions/routes";
-import { withGoogleMap, GoogleMap, Marker, Polyline } from "react-google-maps";
-import withScriptjs from "react-google-maps/lib/async/withScriptjs";
+import * as actions from 'actions/map';
+import * as routeActions from 'actions/routes';
+import { withGoogleMap, GoogleMap, Marker, Polyline } from 'react-google-maps';
+import withScriptjs from 'react-google-maps/lib/async/withScriptjs';
 import CircularProgress from 'material-ui/CircularProgress';
 import Dialog from 'material-ui/Dialog';
 import Layout from '../Layout';
@@ -28,28 +28,45 @@ const symbolOne = {
   scale: 1.5,
 };
 
-const loadPaths = ({tracks, addOrRemoveTrack}) => tracks.map((track ,index) => {
-  const path = track.coords &&
-    track.coords.map(pos => ({ lat: parseFloat(pos.latitude), lng: parseFloat(pos.longitude) }));
-  if(path) {
-    const pathCenter = path[Math.trunc(path.length/2)];
-    const strokeColor = track.selected ? '#ff8a3f' : '#29b3ec';
-    return [
-      <Polyline options={{strokeColor, geodesic: true, path, strokeWeight: 7 }} key={index} onClick={() => addOrRemoveTrack(track) }  />,
-      <Marker position={pathCenter} icon={symbolOne} label={{ text: track.noOfHouses.toString(), color: 'black', fontSize: '8px'}} />
-    ];
-  }
-});
+const loadPaths = ({ tracks, addOrRemoveTrack }) =>
+  tracks.map((track, index) => {
+    const path =
+      track.coords &&
+      track.coords.map(pos => ({
+        lat: parseFloat(pos.latitude),
+        lng: parseFloat(pos.longitude),
+      }));
+    if (path) {
+      const pathCenter = path[Math.trunc(path.length / 2)];
+      const strokeColor = track.selected ? '#ff8a3f' : '#29b3ec';
+      return [
+        <Polyline
+          options={{ strokeColor, geodesic: true, path, strokeWeight: 7 }}
+          key={index}
+          onClick={() => addOrRemoveTrack(track)}
+        />,
+        <Marker
+          position={pathCenter}
+          icon={symbolOne}
+          label={{
+            text: track.noOfHouses.toString(),
+            color: 'black',
+            fontSize: '8px',
+          }}
+        />,
+      ];
+    }
+  });
 
-const TrackGoogleMap = withGoogleMap(props => (
+const TrackGoogleMap = withGoogleMap(props =>
   <GoogleMap
     defaultZoom={18}
     center={props.center}
-    options = {{ scaleControl: true, fullscreenControl: true }}
+    options={{ scaleControl: true, fullscreenControl: true }}
   >
     {props.tracks && loadPaths(props)}
   </GoogleMap>
-));
+);
 
 const styles = {
   loading: {
@@ -59,7 +76,7 @@ const styles = {
     height: '100%',
   },
   map: {
-    height: window.innerHeight-110,
+    height: window.innerHeight - 110,
     width: `100%`,
   },
   button: {
@@ -71,51 +88,57 @@ const styles = {
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingLeft: 32,
-  }
+  },
 };
-
 
 class MapRoutes extends Component {
   state = {
     open: false,
-  }
-	componentDidMount() {
-    navigator.geolocation.getCurrentPosition((pos) => {
-      this.props.setCurrentLocation(pos.coords);
-      this.props.loadPath();
-    }, (err) => {
+  };
+  componentDidMount() {
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        this.props.setCurrentLocation(pos.coords);
+        this.props.loadPath();
+      },
+      err => {
         console.warn('ERROR(' + err.code + '): ' + err.message);
-    });
+      }
+    );
   }
 
-	onStartTracking = () => {
+  onStartTracking = () => {
     const options = {
       enableHighAccuracy: true,
       timeout: 60000,
-      maximumAge: 0
+      maximumAge: 0,
     };
 
-    this.watchId = navigator.geolocation.watchPosition((pos) => {
-      this.props.updateLocation(pos.coords);
-    }, (err) => {
-      console.warn('ERROR(' + err.code + '): ' + err.message);
-    }, options);
-	}
+    this.watchId = navigator.geolocation.watchPosition(
+      pos => {
+        this.props.updateLocation(pos.coords);
+      },
+      err => {
+        console.warn('ERROR(' + err.code + '): ' + err.message);
+      },
+      options
+    );
+  };
 
   handleClose = () => {
     this.setState({ open: false });
-  }
+  };
 
   handleSubmit = () => {
     this.props.createTrack();
     this.setState({ open: false });
-  }
+  };
 
   onCreateRoute = () => {
     this.props.createRoute(this.props.tracks);
-  }
+  };
 
-	render() {
+  render() {
     const { mapDetailsInputChange, noOfHouses, routeTotals } = this.props;
     const actions = [
       <FlatButton
@@ -131,37 +154,38 @@ class MapRoutes extends Component {
     ];
 
     return (
-			<Layout title="MapRoutes">
-				<div id="page-index" className="page" style={{paddingTop:60}}>
-					<TrackGoogleMap
-				    loadingElement={
-				      <div style={styles.loading}>
-				        <CircularProgress />
-				      </div>
-				    }
-				    containerElement={
-				      <div style={styles.container} />
-				    }
-				    mapElement={
-				      <div style={styles.map} />
-				    }
-        		{ ...this.props }
-				  />
-          <Dialog
-            actions={actions}
-            modal={true}
-            open={this.state.open}
-          >
-            <TrackDetails noOfHouses={noOfHouses} onChangeHandle={mapDetailsInputChange} />
+      <Layout title="MapRoutes">
+        <div id="page-index" className="page" style={{ paddingTop: 60 }}>
+          <TrackGoogleMap
+            loadingElement={
+              <div style={styles.loading}>
+                <CircularProgress />
+              </div>
+            }
+            containerElement={<div style={styles.container} />}
+            mapElement={<div style={styles.map} />}
+            {...this.props}
+          />
+          <Dialog actions={actions} modal={true} open={this.state.open}>
+            <TrackDetails
+              noOfHouses={noOfHouses}
+              onChangeHandle={mapDetailsInputChange}
+            />
           </Dialog>
           <div style={styles.routInfo}>
             <div> Total Distance: {routeTotals.distance.toFixed(2)} Km </div>
             <div>No Houses: {routeTotals.noOfHouses}</div>
-            <RaisedButton label="Create Route" style={styles.button} disabled={routeTotals.noOfHouses < 100} onTouchTap={this.onCreateRoute} />
+            <RaisedButton
+              label="Create Route"
+              style={styles.button}
+              disabled={routeTotals.noOfHouses < 100}
+              onTouchTap={this.onCreateRoute}
+            />
           </div>
-				</div>
-			</Layout>);
-	}
+        </div>
+      </Layout>
+    );
+  }
 }
 
 MapRoutes.propTypes = {
@@ -192,13 +216,15 @@ const mapStateToProps = ({ map, routes }) => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    updateLocation: (location) => dispatch(actions.updateLocation(location)),
-    setCurrentLocation: (location) => dispatch(actions.setCurrentLocation(location)),
-    createTrack: () => dispatch(actions.createTrack()),
-    createRoute: () => dispatch(routeActions.createRoute()),
-    mapDetailsInputChange: (change) => dispatch(actions.mapDetailsInputChange(change)),
-    addOrRemoveTrack: (track) => dispatch(actions.addOrRemoveTrack(track)),
-    loadPath: () => dispatch(actions.loadPath()),
+  updateLocation: location => dispatch(actions.updateLocation(location)),
+  setCurrentLocation: location =>
+    dispatch(actions.setCurrentLocation(location)),
+  createTrack: () => dispatch(actions.createTrack()),
+  createRoute: () => dispatch(routeActions.createRoute()),
+  mapDetailsInputChange: change =>
+    dispatch(actions.mapDetailsInputChange(change)),
+  addOrRemoveTrack: track => dispatch(actions.addOrRemoveTrack(track)),
+  loadPath: () => dispatch(actions.loadPath()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(MapRoutes);

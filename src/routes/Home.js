@@ -1,25 +1,21 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from "react-redux";
-import {List, ListItem} from 'material-ui/List';
+import { connect } from 'react-redux';
+import { List, ListItem } from 'material-ui/List';
 import Divider from 'material-ui/Divider';
 import Subheader from 'material-ui/Subheader';
 import Avatar from 'material-ui/Avatar';
-import {grey400, darkBlack, lightBlack} from 'material-ui/styles/colors';
+import { grey400, darkBlack, lightBlack } from 'material-ui/styles/colors';
 import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import Layout from './Layout';
 
-import { fetchUsers } from "actions/user";
+import { fetchUsers } from 'actions/user';
 
 const iconButtonElement = (
-  <IconButton
-    touch={true}
-    tooltip="more"
-    tooltipPosition="bottom-left"
-  >
+  <IconButton touch={true} tooltip="more" tooltipPosition="bottom-left">
     <MoreVertIcon color={grey400} />
   </IconButton>
 );
@@ -33,40 +29,44 @@ const rightIconMenu = (
 );
 
 class IndexPage extends Component {
+  componentDidMount() {
+    this.props.getUsers();
+  }
 
-	componentDidMount(){
-		this.props.getUsers();
-	}
+  render() {
+    return (
+      <Layout title="Home">
+        <div id="page-index" className="page" style={{ paddingTop: 60 }}>
+          <List>
+            {this.props.users &&
+              this.props.users.map((item, index) => [
+                <ListItem
+                  key={item.id}
+                  leftAvatar={
+                    <Avatar>{item.firstName.charAt(0).toUpperCase()}</Avatar>
+                  }
+                  rightIconButton={rightIconMenu}
+                  primaryText={item.firstName}
+                  secondaryText={
+                    <p>
+                      {item.email}
+                    </p>
+                  }
+                  secondaryTextLines={2}
+                />,
+                <Divider inset={true} />,
+              ])}
+          </List>
 
-	render() {
-		return (
-			<Layout title="Home">
-				<div id="page-index" className="page" style={{paddingTop:60}}>
-					<List>
-						{ this.props.users && this.props.users.map( (item, index) => ([
-			        <ListItem
-								key={item.id}
-			          leftAvatar={<Avatar>{item.firstName.charAt(0).toUpperCase()}</Avatar>}
-								rightIconButton={rightIconMenu}
-			          primaryText={item.firstName}
-			          secondaryText={
-			            <p>
-			              {item.email}
-			            </p>
-			          }
-			          secondaryTextLines={2}
-			        />,  <Divider inset={true} /> ]
-						))}
-		      </List>
-
-				</div>
-			</Layout>);
-	}
+        </div>
+      </Layout>
+    );
+  }
 }
 
 IndexPage.propTypes = {
   users: PropTypes.array,
-	getUsers: PropTypes.func,
+  getUsers: PropTypes.func,
 };
 
 const mapStateToProps = ({ user }) => ({

@@ -1,20 +1,19 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import PT from 'prop-types';
 import TextField from 'material-ui/TextField';
 import Snackbar from 'material-ui/Snackbar';
 
 class TrackDetails extends Component {
-
   static propTypes = {
     errors: PT.object,
     noOfHouses: PT.string,
-    onChangeHandle: PT.func
-  }
+    onChangeHandle: PT.func,
+  };
 
   static defaultProps = {
     errors: {},
-    onChangeHandle: () => {}
-  }
+    onChangeHandle: () => {},
+  };
 
   onChangeHandle(e, value) {
     this.props.onChangeHandle({ [e.target.name]: e.target.value });
@@ -35,9 +34,9 @@ class TrackDetails extends Component {
           onChange={::this.onChangeHandle}
         />
         <Snackbar
-           open={!!error_message}
-           message={error_message}
-           autoHideDuration={2000}
+          open={!!error_message}
+          message={error_message}
+          autoHideDuration={2000}
         />
       </form>
     );

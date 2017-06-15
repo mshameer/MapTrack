@@ -1,55 +1,51 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import PT from 'prop-types';
-import { connect } from "react-redux";
-import { addFlashMessage } from "actions/flashMessages";
-
+import { connect } from 'react-redux';
+import { addFlashMessage } from 'actions/flashMessages';
 
 export default function(ComposedComponent) {
+  class Authenticate extends Component {
+    static propTypes = {
+      isAuthenticated: PT.bool,
+      addFlashMessage: PT.func.isRequired,
+    };
 
-    class Authenticate extends Component {
+    static contextTypes = {
+      router: PT.object.isRequired,
+    };
 
-        static propTypes = {
-            isAuthenticated: PT.bool,
-            addFlashMessage: PT.func.isRequired
-        }
+    static defaultProps = {
+      isAuthenticated: false,
+    };
 
-        static contextTypes = {
-            router: PT.object.isRequired
-        }
-
-        static defaultProps = {
-            isAuthenticated: false
-        }
-
-        componentWillMount() {
-            if(!this.props.isAuthenticated){
-                this.props.addFlashMessage({
-                    type: "error",
-                    text: "You need to login to access this page."
-                });
-                this.context.router.push("/");
-            }
-        }
-
-        componentWillUpdate(nextProps) {
-            if (!nextProps.isAuthenticated) {
-                this.context.router.push("/dashboard");
-            }
-        }
-
-        render() {
-            return ( <ComposedComponent {...this.props} /> );
-        }
-
+    componentWillMount() {
+      if (!this.props.isAuthenticated) {
+        this.props.addFlashMessage({
+          type: 'error',
+          text: 'You need to login to access this page.',
+        });
+        this.context.router.push('/');
+      }
     }
 
-    const mapStateToProps = ({ user }) => ({
-        isAuthenticated: user.isAuthenticated
-    });
+    componentWillUpdate(nextProps) {
+      if (!nextProps.isAuthenticated) {
+        this.context.router.push('/dashboard');
+      }
+    }
 
-    const mapDispatchToProps = dispatch => ({
-        addFlashMessage: (sms) => dispatch(addFlashMessage(sms))
-    });
+    render() {
+      return <ComposedComponent {...this.props} />;
+    }
+  }
 
-    return connect(mapStateToProps, mapDispatchToProps)(Authenticate);
+  const mapStateToProps = ({ user }) => ({
+    isAuthenticated: user.isAuthenticated,
+  });
+
+  const mapDispatchToProps = dispatch => ({
+    addFlashMessage: sms => dispatch(addFlashMessage(sms)),
+  });
+
+  return connect(mapStateToProps, mapDispatchToProps)(Authenticate);
 }
