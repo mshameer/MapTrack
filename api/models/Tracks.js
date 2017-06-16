@@ -26,4 +26,11 @@ module.exports = {
     }
   },
 
+  add(attrs, next) {
+		return this.create({
+			noOfHouses: attrs.noOfHouses,
+			type: String(attrs.type).trim(),
+		}).exec(next);
+	},
+
 };

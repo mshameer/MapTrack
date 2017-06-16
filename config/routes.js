@@ -68,6 +68,8 @@ var indexRoutes = ['/',
 	'/dashboard',
 	'/register',
 	'/maptrack',
+	'/routes-create',
+	'/routes-list',
 ];
 indexRoutes.forEach(function (r) {
 	routes['GET ' + r] = 'IndexController.index';

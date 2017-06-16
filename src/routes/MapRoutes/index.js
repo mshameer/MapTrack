@@ -38,7 +38,7 @@ const loadPaths = ({ tracks, addOrRemoveTrack }) =>
       }));
     if (path) {
       const pathCenter = path[Math.trunc(path.length / 2)];
-      const strokeColor = track.selected ? '#ff8a3f' : '#29b3ec';
+      const strokeColor = track.selected || track.route ? '#ff8a3f' : '#29b3ec';
       return [
         <Polyline
           options={{ strokeColor, geodesic: true, path, strokeWeight: 7 }}

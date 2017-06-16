@@ -26,4 +26,29 @@
 
  		});
  	},
+
+  index(req, res){
+    Routes.find()
+    .populateAll()
+    .then(function (routes){
+      let tracks;
+      const promRoutes = routes.map(route => {
+        tracks = route.tracks.map(track => track.id);
+        return Routes.findOne({id: route.id}).populateAll();
+      })
+      const promTracks = Tracks.find({where: {id: tracks}}).populate('coords');
+      Promise.all([promTracks, ...promRoutes]).then(function(pData){
+        const tracks = pData.shift();
+        const routes = pData.map((data) => {
+          const result = data.toObject();
+          result.tracks = data.tracks.map(dTracks => tracks.filter(coTracks => coTracks.id = dTracks.id)[0]);
+          return result;
+        });
+        res.json(routes)
+      })
+    })
+    .catch(function (err){
+        if (err) return res.serverError(err);
+    });
+  }
  };

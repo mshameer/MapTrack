@@ -68,7 +68,7 @@ export default (state = initialState, action = {}) => {
       let { tracks } = state;
       const selectedIndex = tracks.findIndex(mtrack => mtrack.id === track.id);
       tracks[selectedIndex].selected = !track.selected;
-      const total = getTotal(tracks);
+      const total = getTrackTotals(tracks);
       return { ...state, tracks, total, errors: {} };
 
     default:
@@ -76,7 +76,8 @@ export default (state = initialState, action = {}) => {
   }
 };
 
-function getTotal(tracks) {
+
+export function getTrackTotals(tracks) {
   let distance = 0;
   let noOfHouses = 0;
 

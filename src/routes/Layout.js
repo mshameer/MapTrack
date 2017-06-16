@@ -19,7 +19,8 @@ import Data from './data';
 const menus = [
   { text: 'DashBoard', icon: <GridOn />, link: '/dashboard' },
   { text: 'MapTrack', icon: <Map />, link: '/maptrack' },
-  { text: 'Routes', icon: <Logout />, link: '/routes' },
+  { text: 'Creat Routes', icon: <Logout />, link: '/routes-create' },
+  { text: 'Routes List', icon: <Logout />, link: '/routes-list' },
   { text: 'Register', icon: <PersonAdd />, link: '/register' },
   { text: 'Logout', icon: <Logout />, link: '/logout' },
 ];
