@@ -53,7 +53,9 @@ module.exports.connections = {
   * MongoDB is the leading NoSQL database.                                   *
   * http://en.wikipedia.org/wiki/MongoDB                                     *
   *                                                                          *
-  * Run: npm install sails-mongo                                             *
+  * Run: npm install sails-mongo
+  * https://docs.mongodb.com/manual/reference/mongo-shell/
+  * db.stickynotes.remove({})                                            *
   *                                                                          *
   ***************************************************************************/
   sailsMongoDBServer: {

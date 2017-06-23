@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import PT from 'prop-types';
 import { connect } from 'react-redux';
 import { calDistanceKm } from 'utils/map';
+import OpenMap from 'material-ui/svg-icons/action/launch';
+import { Link } from 'react-router';
 import {
   Table,
   TableBody,
@@ -47,9 +49,10 @@ class RoutesList extends Component {
         <TableRow key={index}>
           <TableRowColumn key={index+1} >{index}</TableRowColumn>
           <TableRowColumn key={index+2} >{route.name}</TableRowColumn>
-          <TableRowColumn key={index+3} >{totals.distance}</TableRowColumn>
+          <TableRowColumn key={index+3} >{totals.distance.toFixed(2)}</TableRowColumn>
           <TableRowColumn key={index+4} >{totals.noOfHouses}</TableRowColumn>
-          <TableRowColumn key={index+5} >{33}</TableRowColumn>
+          <TableRowColumn key={index+5} >
+            <Link to={`/routes/${route.id}`} ><OpenMap style={{ width: 20 }}/></Link></TableRowColumn>
         </TableRow>
       );
     });
